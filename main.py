@@ -148,7 +148,7 @@ class ClockScreen:
         self.matrix = np.zeros((size[0], size[1], 3), dtype=np.uint8) # 3 channels for RGB
 
         self.clock_manager = ClockManager()
-        #self.dexcom_manager = DexcomManager()
+        self.dexcom_manager = DexcomManager('miless', 'password123')
 
         self.nightmode = False
 
@@ -244,5 +244,5 @@ class ClockScreen:
 
 
 
-c = ClockScreen((800, 600), 60)
+c = ClockScreen((800, 480), 60)
 c.run()
