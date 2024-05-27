@@ -139,4 +139,14 @@ input[type="file"]::-webkit-file-upload-button {
     .toolbar {
         width: 80%;
     }
+    .file-container {
+        width: 100%;
+    }
+    .files-list ul li {
+        flex-direction: column;
+        width: 80%;
+    }
+    .files-list ul li button {
+        width: 80%;
+    }
 }
