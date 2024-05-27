@@ -81,9 +81,15 @@ numbers_pixels = {
 
     '-': ('00000',
             '00000',
-            '11111',
+            '01110',
             '00000',
-            '00000'),   
+            '00000'),
+    '+': ('00000',
+            '00100',
+            '01110',
+            '00100',
+            '00000'),
+             
     
 }
 
@@ -133,7 +139,7 @@ class DexcomManager:
         }
 
         # replace arrows with + and -
-        self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-')
+        self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-').replace('↗' , '+').replace('↘', '-')
 
 
 
@@ -146,9 +152,19 @@ class ClockScreen:
         self.running = False
 
         self.matrix = np.zeros((size[0], size[1], 3), dtype=np.uint8) # 3 channels for RGB
+        
+        # set the window caption
+        pg.display.set_caption('Pi-Clock')
+        # set the window icon
+        icon = pg.image.load('icon.png')
 
         self.clock_manager = ClockManager()
-        self.dexcom_manager = DexcomManager('miless', 'pass')
+        # read from pass.txt
+        with open('pass.txt') as f:
+            lines = f.readlines()
+            username = lines[0].strip()
+            password = lines[1].strip()
+        self.dexcom_manager = DexcomManager(username, password)
 
         self.nightmode = False
 
@@ -169,6 +185,7 @@ class ClockScreen:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_f:
                     pg.display.toggle_fullscreen()
+                
                 # Q to quit
                 elif event.key == pg.K_q:
                     self.running = False
@@ -198,18 +215,22 @@ class ClockScreen:
 
         # 12 hour clock
         time_str = self.clock_manager.time.strftime("%I:%M:%S")
+
+        color = (255, 255, 255)
+        if self.nightmode:
+            color = (200, 200, 200)
         
         # draw time
-        self.draw_numbers(time_str, x=50, y=80, color=(255, 255, 255), scale=12, spacing=20)
+        self.draw_numbers(time_str, x=50, y=80, color=color, scale=10, spacing=20)
 
         # draw glucose
         if self.dexcom_manager.data:
             glucose_str = str(self.dexcom_manager.data['glucose_value']) + str(self.dexcom_manager.data['trend_arrow'])
             if self.nightmode:
-                scale = 18
+                scale = 15
             else:
-                scale = 12
-            self.draw_numbers(glucose_str, x=50, y=360, color=(255, 255, 255), scale=scale, spacing=20)
+                scale = 10
+            self.draw_numbers(glucose_str, x=50, y=360, color=color, scale=scale, spacing=20)
 
 
         # everything after this is not drawn in nightmode
@@ -222,7 +243,7 @@ class ClockScreen:
         day_int = self.clock_manager.time.weekday()
         date_str = self.clock_manager.time.strftime("%m-%d")
         date_str = str(day_int)+ ' ' + date_str
-        self.draw_numbers(date_str, x=100, y=200, color=(255, 255, 255), scale=6, spacing=20)
+        self.draw_numbers(date_str, x=90, y=170, color=color, scale=6, spacing=20)
 
 
 
