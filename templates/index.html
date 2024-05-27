@@ -26,6 +26,8 @@
 
         <div class="file-container" id="files-container">
             <h2>Files</h2>
+            <!-- upload button with specific types for ios -->
+
             <div class="files-list" id="files-list">
                 <ul>
                     <li>File 1</li>
@@ -36,9 +38,15 @@
                 </ul>
             </div>
         </div>  
+        <input type="file" id="file-input" accept="
+    .txt, .csv, .jpeg, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
+    .zip, .tar, .rar, .gz, .bz2, .7z, .mp3, .wav, .mp4, .mov, .avi, .mkv, .webm, .ogg,
+    .xml, .json, .html, .css, .js, .jsx, .ts, .tsx, .py, .java, .c, .cpp, .h, .sh,
+    .md, .rst, .tex, .psd, .ai, .eps, .svg, .flac, .aac, .m4a, .bmp, .ico, .tif, .tiff,
+    .sql, .dat, .dmg, .iso, .apk, .exe, .dll, .bin, .bat, .cmd, .ebub, .mobi, .azw,
+    .log, .ini, .plist" multiple>
 
     </section>
-
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

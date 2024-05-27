@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
             power: document.getElementById('power-button'),
         },
         filesContainer: document.getElementById('files-container'),
-        filesList: document.getElementById('files-list')
+        filesList: document.getElementById('files-list'),
+        fileInput: document.getElementById('file-input'),
     };
 
     // Fetch files and display them
@@ -142,6 +143,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // when a file is selected, upload it
+    uiElements.fileInput.addEventListener('change', function() {
+        const files = uiElements.fileInput.files;
+
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file);
+        }
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                updateFileList();
+                // Clear the file input
+                uiElements.fileInput.value = '';
+                
+            }
+        });
+    });
 
     uiElements.buttons.reset.addEventListener('click', () => {
        // fetch, resets the software
