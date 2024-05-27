@@ -148,7 +148,7 @@ class ClockScreen:
         self.matrix = np.zeros((size[0], size[1], 3), dtype=np.uint8) # 3 channels for RGB
 
         self.clock_manager = ClockManager()
-        self.dexcom_manager = DexcomManager('miless', 'password123')
+        self.dexcom_manager = DexcomManager('miless', 'pass')
 
         self.nightmode = False
 
@@ -165,6 +165,13 @@ class ClockScreen:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
+
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_f:
+                    pg.display.toggle_fullscreen()
+                # Q to quit
+                elif event.key == pg.K_q:
+                    self.running = False
 
     def update(self):
         now = time.time()
