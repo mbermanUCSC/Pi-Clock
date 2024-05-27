@@ -140,7 +140,7 @@ input[type="file"]::-webkit-file-upload-button {
         width: 80%;
     }
     .file-container {
-        width: 90%;
+        width: 85%;
     }
     .files-list ul li {
         flex-direction: column;
