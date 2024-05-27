@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLOCK SERVER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Title -->
+    <section class="title">
+        <h1>CLOCK SERVER</h1>
+    </section>
+
+    <div class="toolbar-container">
+        <div class="toolbar">
+            <button id="reset-button">RESET</button>
+            <button id="restart-button">RESTART</button>
+            <button id="power-button">OFF</button>
+        </div>
+    </div>
+
+    <section class="ui-container">
+
+        
+
+        <div class="file-container" id="files-container">
+            <h2>Files</h2>
+            <div class="files-list" id="files-list">
+                <ul>
+                    <li>File 1</li>
+                    <li>File 2</li>
+                    <li>File 3</li>
+                    <li>File 4</li>
+                    <li>File 5</li>
+                </ul>
+            </div>
+        </div>  
+
+    </section>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

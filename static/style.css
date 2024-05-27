@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'NASA21';
+    src: url('/static/fonts/NASA21.ttf') format('truetype');
+}
+
+body {
+    font-family: 'NASA21';
+}
+
+.title {
+    font-size: 30px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.toolbar-container {
+    display: flex;
+    justify-content: center;
+}
+
+.toolbar{
+    background-color: #d1d1d124;
+    padding: 20px;
+    width: 22%;
+    border-radius: 8px;
+    /* center buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* space between buttons */
+    gap: 5px;
+}
+
+
+.toolbar button{
+    font-family: 'NASA21';
+    width: 85px;
+    height: 60px;
+    background-color: #ffffff88;
+    border: 1px solid #e7e7e76c;
+    border-radius: 5px;
+    transition: background-color 0.4s;
+    cursor: pointer;
+}
+
+.toolbar button:hover{
+    background-color: #cdcdcd;
+}
+
+
+.ui-container {
+    margin-top: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    text-align: left;
+    padding: 20px;
+    
+    background-color: #6161610e;
+    border-radius: 18px;
+}
+
+.file-container {
+    width: 85%;
+    padding: 20px;
+    background-color: #ffffff88;
+    border-radius: 8px;
+}
+
+.files-list ul {
+    list-style-type: none;
+    padding: 10;
+
+}
+
+.files-list ul li {
+    background-color: #6968681c;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    transition: padding 0.7s ease-in
+}
+
+
+.files-list ul li:hover {
+    background-color: #d7d7d73c;
+}
+
+.files-list ul li button {
+    background-color: #7a7a7a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+    height: 30px;
+    width: 80px;
+    text-align: center;
+}
+
+.files-list .image ul li{
+    background-color: #ffffff;
+}
+
+
+/* drag over css */
+.files-list ul.drag-over {
+    border: 8px dashed #000000;
+    border-radius: 8px;
+}
+
+/* mobile */
+@media only screen and (max-width: 600px) {
+    .toolbar {
+        width: 80%;
+    }
+}

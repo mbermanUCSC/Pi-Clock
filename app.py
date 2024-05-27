@@ -1,0 +1,75 @@
+from flask import Flask, jsonify, render_template, request, send_from_directory
+from datetime import datetime
+import os
+import subprocess
+
+app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+
+undo_stack = []
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+# reset
+@app.route('/reset')
+def reset():
+    return jsonify(success=True, message="System reset.")
+
+# restart
+@app.route('/restart')
+def restart():
+    try:
+        subprocess.run(["sudo", "reboot", "now"], check=True)
+        return jsonify(success=True, message="System is rebooting.")
+    except subprocess.CalledProcessError:
+        return jsonify(success=False, message="Failed to reboot."), 500
+
+# power
+@app.route('/power')
+def power():
+    try:
+        subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+        return jsonify(success=True, message="System is shutting down.")
+    except subprocess.CalledProcessError:
+        return jsonify(success=False, message="Failed to shut down."), 500
+
+@app.route('/files')
+def list_files():
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    return jsonify(files)
+
+# fetch(`/download/${fileName}`)
+@app.route('/download/<filename>')
+def download(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+# delete
+@app.route('/delete/<filename>', methods=['DELETE'])
+def delete(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    os.remove(file_path)
+    return jsonify({'message': 'file deleted'})
+
+# upload
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'files' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    
+    files = request.files.getlist('files')  # Get all files from the form-data
+    for file in files:
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+        if file:
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    
+    return jsonify({'message': 'Files uploaded successfully'})
+
+ 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+
