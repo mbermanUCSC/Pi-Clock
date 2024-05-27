@@ -185,6 +185,11 @@ class ClockScreen:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_f:
                     pg.display.toggle_fullscreen()
+                    # if fullscreen, hide mouse
+                    if pg.display.get_surface() == pg.display.get_surface():
+                        pg.mouse.set_visible(False)
+                    else:
+                        pg.mouse.set_visible(True)
                 
                 # Q to quit
                 elif event.key == pg.K_q:
