@@ -31,19 +31,22 @@ class DexcomManager:
 
         glucose = self.service.get_current_glucose_reading()
 
-        self.data = {
-            'glucose': glucose,
-            'glucose_value': glucose.value,
-            'mmol_l': glucose.mmol_l,
-            'trend': glucose.trend,
-            'trend_description': glucose.trend_description,
-            'trend_direction': glucose.trend_direction,
-            'trend_arrow': glucose.trend_arrow
-        }
+        try:
 
-        # replace arrows with + and -
-        self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-').replace('↗' , '+').replace('↘', '-')
+            self.data = {
+                  'glucose': glucose,
+                  'glucose_value': glucose.value,
+                  'mmol_l': glucose.mmol_l,
+                  'trend': glucose.trend,
+                  'trend_description': glucose.trend_description,
+                  'trend_direction': glucose.trend_direction,
+                  'trend_arrow': glucose.trend_arrow
+            }
 
+            # replace arrows with + and -
+            self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-').replace('↗' , '+').replace('↘', '-')
+        except:
+            self.data = None
 
 class Event:
       def __init__(self, name, start, end, recurrence):
