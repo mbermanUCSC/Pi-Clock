@@ -230,7 +230,11 @@ class ClockScreen:
 
         # draw glucose
         if self.dexcom_manager.data:
-            glucose_str = str(self.dexcom_manager.data['glucose_value']) + str(self.dexcom_manager.data['trend_arrow'])
+            
+            glucose_str = '---'
+            if self.dexcom_manager.data['glucose_value']:
+                glucose_str = str(self.dexcom_manager.data['glucose_value']) + str(self.dexcom_manager.data['trend_arrow'])
+                
             if self.nightmode:
                 scale = 15
             else:
