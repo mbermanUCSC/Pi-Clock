@@ -184,7 +184,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     for (const type in fileTypes) {
                         if (fileTypes[type].includes(fileExtension)) {
                             fileType = type;
-                            break;
+                            // if music file, add the song with a music player
+                            if (fileType === 'audio') {
+                                const audio = document.createElement('audio');
+                                audio.controls = true;
+                                // replace %20 with space
+                                audio.src = `/download/${file.replace(/%20/g, ' ')}`;
+                                li.appendChild(audio);
+                                break;
+                            }
+                            // if image file, add the image (very 10% of the original size)
+                            if (fileType === 'image') {
+                                const img = document.createElement('img');
+                                img.src = `/download/${file.replace(/%20/g, ' ')}`;
+                                img.style.width = '10%';
+                                li.appendChild(img);
+                                break;
+                            }
+
                         }
                     }
 
