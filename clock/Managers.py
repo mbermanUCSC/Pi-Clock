@@ -89,11 +89,12 @@ class CalendarManager:
             # get either the next event or the current event. cyclicle too by so next day events are considered too
             now = datetime.now().time()
             for event in self.events:
-                  if event.start <= now <= event.end:
-                        return event
-                  
-            for event in self.events:
-                  if now < event.start:
-                        return event
+                  if event.start <= now <= event.end or event.start <= now:
+                        # check if event is today
+                        if event.recurrence:
+                              if datetime.now().weekday() in event.recurrence:
+                                    return event
+                        else:
+                              return event # no recurrence, just return the event
 
             return None
