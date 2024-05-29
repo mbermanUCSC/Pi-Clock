@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = 'server/uploads'
 notes = []
 def load_notes():
     if os.path.exists('server/notes.txt'):
-        with open('notes.txt') as f:
+        with open('server/notes.txt') as f:
             for line in f:
                 notes.append(line.strip())
 load_notes()
