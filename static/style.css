@@ -192,14 +192,21 @@ textarea {
     .toolbar {
         width: 80%;
     }
-    .file-container {
+    .ui-container{
+        margin-left: 0;
+        margin-right: 10px;
+    }
+    .file-container, .notes-container {
         width: 85%;
     }
-    .files-list ul li {
+    .files-list ul li, .notes-list ul li {
         flex-direction: column;
         width: 80%;
     }
-    .files-list ul li button {
+    .files-list ul li button, .notes-container button {
         width: 80%;
+    }
+    .note-buttons button{
+        width: 30%;
     }
 }
