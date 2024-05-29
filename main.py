@@ -2,146 +2,8 @@ import numpy as np
 import pygame as pg
 import time
 
-numbers_pixels = {
-    '0': ("11111",
-          "10001",
-          "10001",
-          "10001",
-          "11111"),
-
-    '1': ("01100",
-          "00100",
-          "00100",
-          "00100",
-          "01110"),
-
-    '2': ("11111",
-          "00001",
-          "11111",
-          "10000",
-          "11111"),
-
-    '3': ("11111",
-          "00001",
-          "00111",
-          "00001",
-          "11111"),
-
-    '4': ("10001",
-          "10001",
-          "11111",
-          "00001",
-          "00001"),
-
-    '5': ("11111",
-          "10000",
-          "11111",
-          "00001",
-          "11111"),
-
-    '6': ("11111",
-          "10000",
-          "11111",
-          "10001",
-          "11111"),
-
-    '7': ("11111",
-          "00001",
-          "00001",
-          "00001",
-          "00001"),
-
-    '8': ("11111",
-          "10001",
-          "11111",
-          "10001",
-          "11111"),
-
-    '9': ("11111",
-          "10001",
-          "11111",
-          "00001",
-          "00001"),
-
-    ':': ("00000",
-          "00100",
-          "00000",
-          "00100",
-          "00000"),
-    '.': ("00000",
-            "00000",
-            "00000",
-            "00000",
-            "00100"),
-    ' ': ('00000',
-          '00000',
-          '00000',
-          '00000',
-          '00000'),
-
-    '-': ('00000',
-            '00000',
-            '01110',
-            '00000',
-            '00000'),
-    '+': ('00000',
-            '00100',
-            '01110',
-            '00100',
-            '00000'),
-             
-    
-}
-
-
-
-
-from datetime import datetime
-class ClockManager:
-    def __init__(self, update_interval=1000):
-        self.update_interval = update_interval
-        self.time = datetime.now()
-
-        self.timestamp = 0
-        
-    def update(self, now):
-        # interval in milliseconds
-        if now - self.timestamp > self.update_interval / 1000:
-            self.time = datetime.now()
-            self.timestamp = now
-
-
-from pydexcom import Dexcom
-class DexcomManager:
-    def __init__(self, username, password, update_interval=100000): # 100 seconds
-        self.update_interval = update_interval
-        self.service = Dexcom(username, password)
-        self.data = None
-        self.timestamp = 0
-
-    def update(self, now):
-        if now - self.timestamp < self.update_interval / 1000:
-            return
-        print('Updating Dexcom')
-        
-        self.timestamp = now
-
-        glucose = self.service.get_current_glucose_reading()
-
-        self.data = {
-            'glucose': glucose,
-            'glucose_value': glucose.value,
-            'mmol_l': glucose.mmol_l,
-            'trend': glucose.trend,
-            'trend_description': glucose.trend_description,
-            'trend_direction': glucose.trend_direction,
-            'trend_arrow': glucose.trend_arrow
-        }
-
-        # replace arrows with + and -
-        self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-').replace('↗' , '+').replace('↘', '-')
-
-
+from clock.Managers import ClockManager, DexcomManager, CalendarManager
+from clock.fonts import font1
 
 class ClockScreen:
     def __init__(self, size, tick_rate):
@@ -155,16 +17,15 @@ class ClockScreen:
         
         # set the window caption
         pg.display.set_caption('Pi-Clock')
-        # set the window icon
-        icon = pg.image.load('icon.png')
 
         self.clock_manager = ClockManager()
         # read from pass.txt
-        with open('pass.txt') as f:
+        with open('clock/pass.txt') as f:
             lines = f.readlines()
             username = lines[0].strip()
             password = lines[1].strip()
         self.dexcom_manager = DexcomManager(username, password)
+        self.calendar_manager = CalendarManager()
 
         self.nightmode = False
 
@@ -206,6 +67,7 @@ class ClockScreen:
 
         self.clock_manager.update(now)
         self.dexcom_manager.update(now)
+        self.calendar_manager.update(now)
 
     def draw(self):
         self.screen.fill((0, 0, 0)) # clear screen
@@ -226,7 +88,7 @@ class ClockScreen:
             color = (200, 200, 200)
         
         # draw time
-        self.draw_numbers(time_str, x=50, y=80, color=color, scale=10, spacing=20)
+        self.draw_str(time_str, x=50, y=80, color=color, scale=10, spacing=20)
 
         # draw glucose
         if self.dexcom_manager.data:
@@ -234,43 +96,49 @@ class ClockScreen:
             glucose_str = '---'
             if self.dexcom_manager.data['glucose_value']:
                 glucose_str = str(self.dexcom_manager.data['glucose_value']) + str(self.dexcom_manager.data['trend_arrow'])
-                
+
             if self.nightmode:
                 scale = 15
             else:
                 scale = 10
-            self.draw_numbers(glucose_str, x=50, y=360, color=color, scale=scale, spacing=20)
+            self.draw_str(glucose_str, x=50, y=360, color=color, scale=scale, spacing=20)
 
 
         # everything after this is not drawn in nightmode
         if self.nightmode:
             return
         
+        next_event = self.calendar_manager.get_next_event()
+        if next_event:
+            event_str = next_event.name + ' ' + next_event.start.strftime('%I:%M %p')
+            self.draw_str(event_str, x=100, y=240, color=color, scale=2, spacing=20)
+
+
         # draw date
         # 0 = Monday, 6 = Sunday
         # day/month no year
         day_int = self.clock_manager.time.weekday()
         date_str = self.clock_manager.time.strftime("%m-%d")
         date_str = str(day_int)+ ' ' + date_str
-        self.draw_numbers(date_str, x=90, y=170, color=color, scale=6, spacing=20)
+        self.draw_str(date_str, x=90, y=190, color=color, scale=6, spacing=20)
 
 
 
-    def draw_numbers(self, numbers, x, y, color, scale=1, spacing=10):
+    def draw_str(self, numbers, x, y, color, scale=1, spacing=10):
         current_x = x
         for number in numbers:
-            self.draw_number(number, current_x, y, color, scale)
+            self.draw_char(number, current_x, y, color, scale)
             # Move to the next character position
             # Assuming each character is 5 pixels wide plus the spacing
             current_x += 5 * scale + spacing
 
 
-    def draw_number(self, number, x, y, color, scale):
-        number_pixels = numbers_pixels[number]
-        for i, row in enumerate(number_pixels):
+    def draw_char(self, number, x, y, color, scale):
+        font_char = font1[number]
+        for i, row in enumerate(font_char):
             for j, pixel in enumerate(row):
                 if pixel == '1':
-                    # Draw a scaled pixel (square)
+                    # for scale size
                     for dx in range(scale):  # Width of scaled pixel
                         for dy in range(scale):  # Height of scaled pixel
                             try:
