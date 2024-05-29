@@ -203,6 +203,10 @@ textarea {
         flex-direction: column;
         width: 80%;
     }
+    /* song player */
+    .files-list ul li audio{
+        width: 80%;
+    }
     .files-list ul li button, .notes-container button {
         width: 80%;
     }
