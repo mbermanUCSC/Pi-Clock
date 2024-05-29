@@ -23,13 +23,137 @@ document.addEventListener('DOMContentLoaded', function() {
             reset: document.getElementById('reset-button'),
             restart: document.getElementById('restart-button'),
             power: document.getElementById('power-button'),
+            addNote: document.getElementById('add-note-button'),
+            cancelNote: document.getElementById('cancel-note-button'),
         },
         filesContainer: document.getElementById('files-container'),
         filesList: document.getElementById('files-list'),
         fileInput: document.getElementById('file-input'),
+        notesList: document.getElementById('notes-list'),
+        noteInput: document.getElementById('note-input'),
     };
 
-    // Fetch files and display them
+    var curr_editing = null;
+    
+    // NOTES
+    function updateNoteList() {
+        fetch('/notes')
+            .then(response => response.json())
+            .then(notes => {
+                const noteListUl = uiElements.notesList.querySelector('ul'); 
+                noteListUl.innerHTML = ''; // Clear existing <li> elements
+
+                notes.forEach(note => {
+                    const li = document.createElement('li'); // Create a new <li> element for each note
+                    li.textContent = note;
+
+                    // Create buttons
+                    const editBtn = document.createElement('button');
+                    editBtn.textContent = 'Edit';
+                    editBtn.onclick = function() { editNote(note); };
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.onclick = function() { deleteNote(note); };
+
+                    // Append buttons to the li element
+                    li.appendChild(editBtn);
+                    li.appendChild(deleteBtn);
+
+                    noteListUl.appendChild(li); // Append the <li> to the <ul>
+                });
+            })
+            .catch(error => {
+                document.querySelector('#notes-list ul').innerHTML = '<li>Failed to load notes.</li>';
+            });
+    }
+    updateNoteList();
+
+    // add a note
+    uiElements.buttons.addNote.addEventListener('click', () => {
+        if (curr_editing) {
+            // delete the note being edited
+            deleteNote(curr_editing, true);
+            curr_editing = null;
+        }
+        const note = uiElements.noteInput.value;
+        if (note) {
+            // send a request to the server to add the note
+            fetch('/notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ note }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    updateNoteList();
+                    uiElements.noteInput.value = '';
+                }
+            });
+        }
+    });
+
+    // cancel editing a note
+    uiElements.buttons.cancelNote.addEventListener('click', () => {
+        const allNotes = document.querySelectorAll('#notes-list ul li');
+        allNotes.forEach(noteElem => {
+            noteElem.classList.remove('editing-note');
+        });
+        curr_editing = null;
+        uiElements.noteInput.value = '';
+    });
+
+    // delete a note
+    function deleteNote(note, editing=false) {
+        // confirm the user wants to delete the note
+        if (editing) {
+            if (!confirm(`Are you sure you want to override "${note}"?`)) {
+                return;
+        }
+        }
+        else{
+            if (!confirm(`Are you sure you want to delete "${note}"?`)) {
+                return;
+            }
+        }
+
+        // send a request to the server to delete the note
+        fetch(`/notes/${note}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    updateNoteList();
+                }
+            });
+    }
+
+    // edit a note
+    function editNote(note) {
+        console.log('Editing note', note);
+        curr_editing = note;
+    
+        // Find all note elements and remove editing style
+        const allNotes = document.querySelectorAll('#notes-list ul li');
+        allNotes.forEach(noteElem => {
+            noteElem.classList.remove('editing-note');
+        });
+    
+        // Find the specific note element and add editing style
+        const noteListUl = uiElements.notesList.querySelector('ul');
+        const notes = noteListUl.getElementsByTagName('li');
+        Array.from(notes).forEach(noteElem => {
+            if (noteElem.textContent.includes(note)) { // Assumes textContent includes the note content only
+                noteElem.classList.add('editing-note');
+                uiElements.noteInput.value = note;  // Set the input field to the note being edited
+            }
+        });
+    }
+    
+
+
+
+    // FILES
     function updateFileList() {
         fetch('/files')
             .then(response => response.json())
@@ -80,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     updateFileList();
+
 
     // Example callback functions
     function downloadFile(fileName) {
@@ -165,6 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+
 
     uiElements.buttons.reset.addEventListener('click', () => {
        // fetch, resets the software

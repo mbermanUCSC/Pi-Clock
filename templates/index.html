@@ -37,15 +37,34 @@
                     <li>File 5</li>
                 </ul>
             </div>
+            <input type="file" id="file-input" accept="
+            .txt, .csv, .jpeg, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
+            .zip, .tar, .rar, .gz, .bz2, .7z, .mp3, .wav, .mp4, .mov, .avi, .mkv, .webm, .ogg,
+            .xml, .json, .html, .css, .js, .jsx, .ts, .tsx, .py, .java, .c, .cpp, .h, .sh,
+            .md, .rst, .tex, .psd, .ai, .eps, .svg, .flac, .aac, .m4a, .bmp, .ico, .tif, .tiff,
+            .sql, .dat, .dmg, .iso, .apk, .exe, .dll, .bin, .bat, .cmd, .ebub, .mobi, .azw,
+            .log, .ini, .plist" multiple>
         </div>  
-        <input type="file" id="file-input" accept="
-    .txt, .csv, .jpeg, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
-    .zip, .tar, .rar, .gz, .bz2, .7z, .mp3, .wav, .mp4, .mov, .avi, .mkv, .webm, .ogg,
-    .xml, .json, .html, .css, .js, .jsx, .ts, .tsx, .py, .java, .c, .cpp, .h, .sh,
-    .md, .rst, .tex, .psd, .ai, .eps, .svg, .flac, .aac, .m4a, .bmp, .ico, .tif, .tiff,
-    .sql, .dat, .dmg, .iso, .apk, .exe, .dll, .bin, .bat, .cmd, .ebub, .mobi, .azw,
-    .log, .ini, .plist" multiple>
 
+        <div class="notes-container" id="notes-container">
+            <h2>Notes</h2>
+            <div class="notes-list" id="notes-list">
+                <ul>
+                    <li>Note 1</li>
+                    <li>Note 2</li>
+                    <li>Note 3</li>
+                    <li>Note 4</li>
+                    <li>Note 5</li>
+                </ul>
+            </div>
+            <div class="note-input-container">
+                <textarea id="note-input" placeholder="..."></textarea>
+                <section class="note-buttons">
+                    <button id="add-note-button">+</button>
+                    <button id="cancel-note-button">x</button>
+                </section>
+            </div>
+        </div>
     </section>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

@@ -61,7 +61,7 @@ body {
     border-radius: 18px;
 }
 
-.file-container {
+.file-container, .notes-container{
     width: 85%;
     padding: 20px;
     background-color: #ffffff88;
@@ -132,6 +132,59 @@ input[type="file"]::-webkit-file-upload-button {
     height: 30px;
     width: 80px;
     text-align: center;
+}
+
+.notes-list ul {
+    list-style-type: none;
+    padding: 10;
+}
+
+.notes-list ul li {
+    background-color: #c6c6c61c;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    gap: 10px;
+    transition: padding 0.7s ease-in
+}
+
+.notes-container button {
+    background-color: #7a7a7a;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 10px;
+    padding: 5px;
+    cursor: pointer;
+    height: 20px;
+    width: 70px;
+    text-align: center;
+}
+
+.note-input-container {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.editing-note {
+    background-color: #f0f0f0; /* Light grey background */
+    border: 2px dashed #007BFF; /* Dashed blue border */
+    padding: 5px;
+}
+
+
+/* textarea */
+textarea {
+    font-family: 'NASA21';
+    width: 80%;
+    height: 100px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #00000025;
+    resize: none;
 }
 
 /* mobile */
