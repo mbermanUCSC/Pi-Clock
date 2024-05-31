@@ -23,16 +23,13 @@ class DexcomManager:
         self.timestamp = 0
 
     def update(self, now):
-        if now - self.timestamp < self.update_interval / 1000:
+      if now - self.timestamp < self.update_interval / 1000:
             return
-        print('Updating Dexcom')
+      print('Updating Dexcom')
         
-        self.timestamp = now
-
-        glucose = self.service.get_current_glucose_reading()
-
-        try:
-
+      self.timestamp = now
+      try:
+            glucose = self.service.get_current_glucose_reading()
             self.data = {
                   'glucose': glucose,
                   'glucose_value': glucose.value,
@@ -45,7 +42,7 @@ class DexcomManager:
 
             # replace arrows with + and -
             self.data['trend_arrow'] = self.data['trend_arrow'].replace('→', '').replace('↑', '+').replace('↓', '-').replace('↗' , '+').replace('↘', '-')
-        except:
+      except:
             self.data = None
 
 class Event:
